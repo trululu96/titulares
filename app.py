@@ -4,7 +4,8 @@ import webbrowser
 
 noticias = [
     'El tiempo',
-    'El espectador'
+    'El espectador',
+    'Semana'
     ]
 
 def limits(noticias, max_y): 
@@ -27,7 +28,8 @@ def limits(noticias, max_y):
 
 news = [
     main.el_tiempo(),
-    main.el_espectador()
+    main.el_espectador(),
+    main.semana()
 ]
 
 
@@ -60,7 +62,15 @@ def principal(stdscr):
     limites, completo = limits(noticias, w)
     fin = int(h)-2
     c_n = 0
-    print_et(stdscr, current_row, news[c_n], inicio, fin, completo, limites, c_n)
+    print_et(stdscr, 
+            current_row, 
+            news[c_n], 
+            inicio, 
+            fin, 
+            completo, 
+            limites, 
+            c_n)
+
     stdscr.refresh()
 
     while 1 : 
@@ -73,7 +83,8 @@ def principal(stdscr):
                 fin -= 1
                 inicio -= 1 
             current_row -= 1
-        elif key == curses.KEY_DOWN and current_row < len(news[c_n].titulares) - 1 : 
+        elif (key == curses.KEY_DOWN and 
+              current_row < len(news[c_n].titulares) - 1 ): 
             if current_row == fin-1:
                 fin += 1
                 inicio += 1 
@@ -85,10 +96,20 @@ def principal(stdscr):
         elif key == curses.KEY_RIGHT and c_n < len(noticias) -1 :
             c_n += 1
 
-        print_et(stdscr, current_row, news[c_n], inicio, fin, completo, limites, c_n)
+        print_et(stdscr, 
+                current_row, 
+                news[c_n], 
+                inicio, 
+                fin, 
+                completo, 
+                limites, 
+                c_n)
+
+
 
         stdscr.refresh()
 
 
 
 curses.wrapper(principal)
+

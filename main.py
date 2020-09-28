@@ -40,7 +40,7 @@ class el_tiempo():
                         return href[inicio:(c)]
                     else:
                         marker = True
-                        inicio = c
+                        inicio = c + 1
 
         
         for i in titulares:
@@ -49,7 +49,7 @@ class el_tiempo():
             #Esta en las categorias que no interesan
                 continue
             else:
-                c_titular['href'] ="https://www.eltiempo.com/" + i['href']
+                c_titular['href'] ="https://www.eltiempo.com" + i['href']
                 c_titular['categoria'] = extraer_cat(i['href'])
                 c_titular['titular'] = i.contents[0]
                 lista.append(c_titular)
@@ -79,7 +79,7 @@ class el_espectador():
                     return True
             return False
 
-        URL = 'https://www.elespectador.com/'
+        URL = 'https://www.elespectador.com'
 
         titulares = (
             BeautifulSoup(requests.get(URL).content, 'html.parser').
@@ -102,7 +102,7 @@ class el_espectador():
         for i in titulares:
             try:
                 c_titular = {'href':None, 'categoria':None, 'titular':None}
-                c_titular['href'] = 'https://www.elespectador.com' + i['href']
+                c_titular['href'] = URL + i['href']
                 c_titular['categoria'] = extraer_cat(i['href'])
 
                 if not esta_en(i['href']):
@@ -122,3 +122,47 @@ class el_espectador():
 
 
 
+
+class semana():
+    def __init__(self):
+        self.titulares = self.first_scrap()
+
+    def first_scrap(self):
+
+        URL = 'https://www.semana.com'
+        page = requests.get(URL)
+        titulares = (
+            BeautifulSoup(requests.get(URL).content, 'html.parser').
+            find_all('h2', {'class': ['card-title h4', 'card-title h3']})
+        )
+
+        banned_cat=[
+            '/gente/',
+            '/deportes/'
+        ]
+
+        def esta_en(cat):
+            for i in banned_cat:
+                if i in cat:
+                    return True
+            return False
+        def extraer_cat(href): 
+            marker = False
+            for c,i in enumerate(href):
+                if i == '/':
+                    if marker:
+                        return href[inicio:(c)]
+                    else:
+                        marker = True
+                        inicio = c + 1
+
+        complete = []
+        for i in titulares:
+            c_titular = {'href':None, 'categoria':None, 'titular':None}
+            if not esta_en(i.parent['href']):
+                c_titular['titular'] = i.contents[0]
+                c_titular['href'] = URL + i.parent['href']
+                c_titular['categoria'] = extraer_cat(i.parent['href'])
+                complete.append(c_titular)
+
+        return complete
